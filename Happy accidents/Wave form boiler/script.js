@@ -1,12 +1,11 @@
+// TODO Delete and get back to standard implemenation
+
 const canvas = document.getElementById('canvas1')
 const ctx = canvas.getContext('2d')
-canvas.width = 500
-canvas.height = 500
+canvas.width = 1000
+canvas.height= 1000
 
-// canvas.width = window.innerWidth
-// canvas.height = window.innerHeight
-
-
+console.log(ctx)
 ctx.fillStyle = 'white'
 ctx.strokeStyle = 'white'
 ctx.lineWidth = 1
@@ -25,7 +24,7 @@ class Particle {
     this.history = [{x: this.x, y: this.y}]
     this.maxLength = Math.floor((Math.random() * 10) + 111)
     this.timer = this.maxLength * 1.5
-    this.angle
+    this.angle = 0
     this.colors = ['#D6EFFF','#85D0FF', '#33B1FF', '#008AE0', '#00588F']
     this.color = this.colors[Math.floor(Math.random() * this.colors.length)]
   }
@@ -52,10 +51,37 @@ class Particle {
         this.angle = this.effect.field[index].colorAngle
       }
 
-      this.speedX = Math.sin(this.angle)
-      this.speedY = Math.cos(this.angle)
+      this.speedX = Math.cos(this.angle)
+      this.speedY = Math.sin(this.angle)
       this.x += this.speedX * this.boost
       this.y += this.speedY * this.boost
+      // All add
+      // this.x += (this.speedX + Math.cos(this.angle)) + this.boost
+      // this.y += (this.speedY + Math.sin(this.angle)) + this.boost
+      // All multiply
+      // this.x += (this.speedX * Math.cos(this.angle)) * this.boost
+      // this.y += (this.speedY * Math.sin(this.angle)) * this.boost
+      // Add to speed multiply boost
+      // this.x += (this.speedX + Math.cos(this.angle)) * this.boost
+      // this.y += (this.speedY + Math.sin(this.angle)) * this.boost
+      // Multiply speed and add boost
+      // this.x += (this.speedX * Math.cos(this.angle)) + this.boost
+      // this.y += (this.speedY * Math.sin(this.angle)) + this.boost
+      // Add speed and subtract boost
+      // this.x += (this.speedX + Math.cos(this.angle)) - this.boost
+      // this.y += (this.speedY + Math.sin(this.angle)) - this.boost
+      // Add speed and divide boost
+      // this.x += (this.speedX + Math.cos(this.angle)) / this.boost
+      // this.y += (this.speedY + Math.sin(this.angle)) / this.boost
+      // Multiply speed and subtract boost
+      // this.x += (this.speedX * Math.cos(this.angle)) - this.boost
+      // this.y += (this.speedY * Math.sin(this.angle)) - this.boost
+      // Divide speed and add boost
+      // this.x += (this.speedX / Math.cos(this.angle)) + this.boost
+      // this.y += (this.speedY / Math.sin(this.angle)) + this.boost
+      // Divide speed and add boost
+      // this.x += (this.speedX / Math.cos(this.angle)) / this.boost
+      // this.y += (this.speedY / Math.sin(this.angle)) / this.boost
 
       this.history.push({x: this.x, y: this.y})
     if (this.history.length > this.maxLength){
@@ -84,7 +110,7 @@ class Effect {
     this.height = this.canvas.height
     this.particles = []
     this.numberOfParticles = 500
-    this.cellSize = 10
+    this.cellSize = 5
     this.rows
     this.cols
     this.field = []
@@ -97,9 +123,9 @@ class Effect {
       if (e.key === 'd') this.debug = !this.debug
     })
 
-    // window.addEventListener('resize', e => {
-    //   // this.resize(e.target.innerWidth, e.target.innerHeight)
-    // })
+    window.addEventListener('resize', e => {
+      // this.resize(e.target.innerWidth, e.target.innerHeight)
+    })
   }
 
   drawText(){
@@ -107,12 +133,10 @@ class Effect {
     this.context.textAlign = 'center'
     this.context.textBaseline = 'middle'
 
-    const gradient = this.context.createLinearGradient(0,0,this.width,this.height)
-    gradient.addColorStop(.2,'rgb(255,255,255)')
-    gradient.addColorStop(.8,'rgb(14, 72, 207)')
+    const gradient =
 
-    this.context.fillStyle = gradient
-    this.context.fillText('AA', this.width * .5, this.height * .5, this.width * .9)
+    this.context.fillStyle = 'Aqua'
+    this.context.fillText('AA', this.width * .5, this.height * .5)
   }
 
   init(){
@@ -142,6 +166,28 @@ class Effect {
       }
     }
 
+
+
+    // for (let y = 0; y <= this.rows; y++){
+    //   for (let x = 0; x <= this.cols; x++){
+    //     // TODO Make each permutation of the operators and sin cos combinations
+    //     let angle = (Math.sin(x *  this.zoom) + Math.cos(y * this.zoom)) + this.curve
+    //     // let angle = (Math.sin(x +  this.zoom) + Math.cos(y * this.zoom)) * this.curve
+    //     // let angle = (Math.sin(x +  this.zoom) + Math.cos(y + this.zoom)) * this.curve
+    //     // let angle = (Math.sin(x +  this.zoom) + Math.cos(y + this.zoom)) + this.curve
+    //     // let angle = (Math.sin(x -  this.zoom) + Math.cos(y + this.zoom)) + this.curve
+    //     // let angle = (Math.sin(x -  this.zoom) - Math.cos(y + this.zoom)) + this.curve
+    //     // let angle = (Math.sin(x -  this.zoom) - Math.cos(y - this.zoom)) + this.curve
+    //     // let angle = (Math.sin(x -  this.zoom) - Math.cos(y - this.zoom)) - this.curve
+    //     // let angle = (Math.sin(x /  this.zoom) - Math.cos(y - this.zoom)) - this.curve
+    //     // let angle = (Math.sin(x /  this.zoom) / Math.cos(y - this.zoom)) - this.curve
+    //     // let angle = (Math.sin(x /  this.zoom) / Math.cos(y / this.zoom)) - this.curve
+    //     // let angle = (Math.sin(x /  this.zoom) / Math.cos(y / this.zoom)) / this.curve
+    //     // let angle = (Math.sin(x *  this.zoom) - Math.cos(y / this.zoom)) / this.curve
+
+    //     this.field.push(angle)
+    //   }
+    // }
     this.particles = []
     for (let i = 0; i <= this.numberOfParticles; i++){
       this.particles.push(new Particle(this))

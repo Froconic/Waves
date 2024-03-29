@@ -1,12 +1,11 @@
+// TODO add a way to fade the words
+
 const canvas = document.getElementById('canvas1')
 const ctx = canvas.getContext('2d')
-canvas.width = 500
-canvas.height = 500
+canvas.width = window.innerWidth
+canvas.height= window.innerHeight
 
-// canvas.width = window.innerWidth
-// canvas.height = window.innerHeight
-
-
+console.log(ctx)
 ctx.fillStyle = 'white'
 ctx.strokeStyle = 'white'
 ctx.lineWidth = 1
@@ -25,7 +24,7 @@ class Particle {
     this.history = [{x: this.x, y: this.y}]
     this.maxLength = Math.floor((Math.random() * 10) + 111)
     this.timer = this.maxLength * 1.5
-    this.angle
+    this.angle = 0
     this.colors = ['#D6EFFF','#85D0FF', '#33B1FF', '#008AE0', '#00588F']
     this.color = this.colors[Math.floor(Math.random() * this.colors.length)]
   }
@@ -43,19 +42,43 @@ class Particle {
   // Add the speed to get lines
   update(){
     this.timer --
+    this.angle += (Math.random() * 3) + 1
+    // this.angle += .5
     if (this.timer >= 1){
       let x = Math.floor(this.x / this.effect.cellSize)
       let y = Math.floor(this.y/ this.effect.cellSize)
       let index = y * this.effect.cols + x
-      if (this.effect.field[index])
-      {
-        this.angle = this.effect.field[index].colorAngle
-      }
+      this.angle = this.effect.field[index]
 
-      this.speedX = Math.sin(this.angle)
-      this.speedY = Math.cos(this.angle)
-      this.x += this.speedX * this.boost
-      this.y += this.speedY * this.boost
+      this.speedX = Math.cos(this.angle)
+      this.speedY = Math.sin(this.angle)
+      // All add
+      // this.x += (this.speedX + Math.cos(this.angle)) + this.boost
+      // this.y += (this.speedY + Math.sin(this.angle)) + this.boost
+      // All multiply
+      // this.x += (this.speedX * Math.cos(this.angle)) * this.boost
+      // this.y += (this.speedY * Math.sin(this.angle)) * this.boost
+      // Add to speed multiply boost
+      this.x += (this.speedX + Math.cos(this.angle)) * this.boost
+      this.y += (this.speedY + Math.sin(this.angle)) * this.boost
+      // Multiply speed and add boost
+      // this.x += (this.speedX * Math.cos(this.angle)) + this.boost
+      // this.y += (this.speedY * Math.sin(this.angle)) + this.boost
+      // Add speed and subtract boost
+      // this.x += (this.speedX + Math.cos(this.angle)) - this.boost
+      // this.y += (this.speedY + Math.sin(this.angle)) - this.boost
+      // Add speed and divide boost
+      // this.x += (this.speedX + Math.cos(this.angle)) / this.boost
+      // this.y += (this.speedY + Math.sin(this.angle)) / this.boost
+      // Multiply speed and subtract boost
+      // this.x += (this.speedX * Math.cos(this.angle)) - this.boost
+      // this.y += (this.speedY * Math.sin(this.angle)) - this.boost
+      // Divide speed and add boost
+      // this.x += (this.speedX / Math.cos(this.angle)) + this.boost
+      // this.y += (this.speedY / Math.sin(this.angle)) + this.boost
+      // Divide speed and add boost
+      // this.x += (this.speedX / Math.cos(this.angle)) / this.boost
+      // this.y += (this.speedY / Math.sin(this.angle)) / this.boost
 
       this.history.push({x: this.x, y: this.y})
     if (this.history.length > this.maxLength){
@@ -83,13 +106,13 @@ class Effect {
     this.width = this.canvas.width
     this.height = this.canvas.height
     this.particles = []
-    this.numberOfParticles = 500
+    this.numberOfParticles = 1000
     this.cellSize = 10
     this.rows
     this.cols
     this.field = []
-    this.curve = 1
-    this.zoom = .07
+    this.curve = 5
+    this.zoom = .055
     this.debug = true
     this.init();
 
@@ -97,51 +120,42 @@ class Effect {
       if (e.key === 'd') this.debug = !this.debug
     })
 
-    // window.addEventListener('resize', e => {
-    //   // this.resize(e.target.innerWidth, e.target.innerHeight)
-    // })
+    window.addEventListener('resize', e => {
+      this.resize(e.target.innerWidth, e.target.innerHeight)
+    })
   }
 
   drawText(){
-    this.context.font = '400px Impact'
+    this.context.font = '200px Impact'
     this.context.textAlign = 'center'
     this.context.textBaseline = 'middle'
-
-    const gradient = this.context.createLinearGradient(0,0,this.width,this.height)
-    gradient.addColorStop(.2,'rgb(255,255,255)')
-    gradient.addColorStop(.8,'rgb(14, 72, 207)')
-
-    this.context.fillStyle = gradient
-    this.context.fillText('AA', this.width * .5, this.height * .5, this.width * .9)
+    this.context.fillText('Boop', this.width * .5, this.height * .5)
   }
 
   init(){
     this.rows = Math.floor(this.height / this.cellSize)
     this.cols = Math.floor(this.width / this.cellSize)
     this.field = []
+    for (let y = 0; y <= this.rows; y++){
+      for (let x = 0; x <= this.cols; x++){
+        // TODO Make each permutation of the operators and sin cos combinations
+        let angle = (Math.sin(x *  this.zoom) + Math.cos(y * this.zoom)) + this.curve
+        // let angle = (Math.sin(x +  this.zoom) + Math.cos(y * this.zoom)) * this.curve
+        // let angle = (Math.sin(x +  this.zoom) + Math.cos(y + this.zoom)) * this.curve
+        // let angle = (Math.sin(x +  this.zoom) + Math.cos(y + this.zoom)) + this.curve
+        // let angle = (Math.sin(x -  this.zoom) + Math.cos(y + this.zoom)) + this.curve
+        // let angle = (Math.sin(x -  this.zoom) - Math.cos(y + this.zoom)) + this.curve
+        // let angle = (Math.sin(x -  this.zoom) - Math.cos(y - this.zoom)) + this.curve
+        // let angle = (Math.sin(x -  this.zoom) - Math.cos(y - this.zoom)) - this.curve
+        // let angle = (Math.sin(x /  this.zoom) - Math.cos(y - this.zoom)) - this.curve
+        // let angle = (Math.sin(x /  this.zoom) / Math.cos(y - this.zoom)) - this.curve
+        // let angle = (Math.sin(x /  this.zoom) / Math.cos(y / this.zoom)) - this.curve
+        // let angle = (Math.sin(x /  this.zoom) / Math.cos(y / this.zoom)) / this.curve
+        // let angle = (Math.sin(x *  this.zoom) - Math.cos(y / this.zoom)) / this.curve
 
-    this.drawText()
-
-    const pixels = this.context.getImageData(0,0,this.width,this.height).data
-    console.log(pixels)
-
-    for(let y = 0; y <= this.height; y+= this.cellSize){
-      for(let x = 0; x <= this.width; x+= this.cellSize){
-        const index = (y * this.width + x) * 4
-        const red = pixels[index]
-        const green = pixels[index+1]
-        const blue = pixels[index+2]
-        const alpha = pixels[index+3]
-        const grayscale = (red + green + blue) / 3
-        const colorAngle = ((grayscale/255) * 6.28).toFixed(2)
-        this.field.push({
-          x: x,
-          y: y,
-          colorAngle: colorAngle
-        })
+        this.field.push(angle)
       }
     }
-
     this.particles = []
     for (let i = 0; i <= this.numberOfParticles; i++){
       this.particles.push(new Particle(this))
