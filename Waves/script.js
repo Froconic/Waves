@@ -1,7 +1,7 @@
 const canvas = document.getElementById('canvas1')
 const ctx = canvas.getContext('2d')
-canvas.width = 500
-canvas.height = 500
+canvas.width = 1500
+canvas.height = 1500
 
 // canvas.width = window.innerWidth
 // canvas.height = window.innerHeight
@@ -21,11 +21,14 @@ class Particle {
     this.y = Math.floor(Math.random() * this.effect.height)
     this.speedX
     this.speedY
-    this.boost = Math.floor((Math.random() * 3) + 1)
+    this.boost = Math.floor((Math.random() * 2) + 1)
     this.history = [{x: this.x, y: this.y}]
-    this.maxLength = Math.floor((Math.random() * 10) + 111)
-    this.timer = this.maxLength * 1.5
-    this.angle
+    this.maxLength = Math.floor((Math.random() * 11) + 111)
+    this.timer = this.maxLength * 2
+    this.angle = 0
+    this.newAngle = 0
+    this.angleCorrector = (Math.random() * .05) + .5
+    // this.angleCorrector = this.angle * .1
     this.colors = ['#D6EFFF','#85D0FF', '#33B1FF', '#008AE0', '#00588F']
     this.color = this.colors[Math.floor(Math.random() * this.colors.length)]
   }
@@ -49,7 +52,14 @@ class Particle {
       let index = y * this.effect.cols + x
       if (this.effect.field[index])
       {
-        this.angle = this.effect.field[index].colorAngle
+        this.newAngle = this.effect.field[index].colorAngle
+        if (this.angle > this.newAngle){
+          this.angle -= this.angleCorrector
+        } else if (this.angle < this.newAngle){
+          this.angle += this.angleCorrector
+        } else {
+          this.angle = this.newAngle
+        }
       }
 
       this.speedX = Math.sin(this.angle)
@@ -68,10 +78,26 @@ class Particle {
     }
     }
   reset(){
-    this.x = Math.floor(Math.random() * this.effect.width)
-    this.y = Math.floor(Math.random() * this.effect.height)
-    this.history = [{x: this.x, y: this.y}]
-    this.timer = this.maxLength * 1.5
+    let attempts = 0
+    let resetSuccess = false
+
+    while (attempts < 15 && !resetSuccess){
+      attempts++
+      let test = Math.floor(Math.random() * this.effect.field.length)
+      if (this.effect.field[test].alpha > 0){
+        this.x = Math.floor(Math.random() * this.effect.width)
+        this.y = Math.floor(Math.random() * this.effect.height)
+        this.history = [{x: this.x, y: this.y}]
+        this.timer = this.maxLength * 3
+        resetSuccess = true
+      }
+    }
+    if (!resetSuccess){
+      this.x = Math.random() * this.effect.width
+      this.y = Math.random() * this.effect.height
+      this.history = [{x: this.x, y: this.y}]
+      this.timer = this.maxLength * 3
+    }
   }
 }
 
@@ -83,13 +109,11 @@ class Effect {
     this.width = this.canvas.width
     this.height = this.canvas.height
     this.particles = []
-    this.numberOfParticles = 500
-    this.cellSize = 10
+    this.numberOfParticles = 900
+    this.cellSize = 5
     this.rows
     this.cols
     this.field = []
-    this.curve = 1
-    this.zoom = .07
     this.debug = true
     this.init();
 
@@ -108,11 +132,23 @@ class Effect {
     this.context.textBaseline = 'middle'
 
     const gradient = this.context.createLinearGradient(0,0,this.width,this.height)
-    gradient.addColorStop(.2,'rgb(255,255,255)')
-    gradient.addColorStop(.8,'rgb(14, 72, 207)')
+    gradient.addColorStop(.5,'rgb(9,35,16)')
+    gradient.addColorStop(.8,'rgb(99, 75, 218)')
+    const gradient2 = this.context.createRadialGradient(this.height * .5, this.width * .5, 10,this.height * .5, this.width * .5, this.width)
+    // gradient2.addColorStop(1,'rgb(214, 239, 255)')
+    // gradient2.addColorStop(.8,'rgb(133, 208, 255)')
+    // gradient2.addColorStop(.6,'rgb(51, 177, 255)')
+    // gradient2.addColorStop(.4,'rgb(0, 138, 224)')
+    // gradient2.addColorStop(.2,'rgb(0, 88, 143)')
+    gradient2.addColorStop(.9,'rgb(0,0,255)')
+    gradient2.addColorStop(.7,'rgb(200,255,0)')
+    gradient2.addColorStop(.5,'rgb(0,0,255)')
+    gradient2.addColorStop(.3,'rgb(0,0,0)')
+    gradient2.addColorStop(.1,'rgb(255,255,255)')
 
-    this.context.fillStyle = gradient
-    this.context.fillText('AA', this.width * .5, this.height * .5, this.width * .9)
+
+    this.context.fillStyle = gradient2
+    this.context.fillText('Assinine', this.width * .5, this.height * .5, this.width * .9)
   }
 
   init(){
@@ -125,8 +161,8 @@ class Effect {
     const pixels = this.context.getImageData(0,0,this.width,this.height).data
     console.log(pixels)
 
-    for(let y = 0; y <= this.height; y+= this.cellSize){
-      for(let x = 0; x <= this.width; x+= this.cellSize){
+    for(let y = 0; y < this.height; y+= this.cellSize){
+      for(let x = 0; x < this.width; x+= this.cellSize){
         const index = (y * this.width + x) * 4
         const red = pixels[index]
         const green = pixels[index+1]
@@ -137,6 +173,7 @@ class Effect {
         this.field.push({
           x: x,
           y: y,
+          alpha: alpha,
           colorAngle: colorAngle
         })
       }
@@ -146,6 +183,7 @@ class Effect {
     for (let i = 0; i <= this.numberOfParticles; i++){
       this.particles.push(new Particle(this))
     }
+    this.particles.forEach(particle => particle.reset())
   }
 
   drawGrid(){
@@ -178,8 +216,8 @@ class Effect {
 
   render(){
     if (this.debug) {
-      this.drawGrid()
-      this.drawText()
+      // this.drawGrid()
+      // this.drawText()
     }
     this.particles.forEach(particle => {
       particle.draw(this.context)
