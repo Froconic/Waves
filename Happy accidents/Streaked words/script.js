@@ -21,9 +21,9 @@ class Particle {
     this.y = Math.floor(Math.random() * this.effect.height)
     this.speedX
     this.speedY
-    this.boost = Math.floor((Math.random() * 2) + 1)
+    this.boost = Math.floor((Math.random() * 5) + 1)
     this.history = [{x: this.x, y: this.y}]
-    this.maxLength = Math.floor((Math.random() * 11) + 33)
+    this.maxLength = Math.floor((Math.random() * 11) + 22)
     this.timer = this.maxLength * 3
     this.angle = 0
     this.newAngle = 0
@@ -53,35 +53,6 @@ class Particle {
       if (this.effect.field[index])
       {
         this.newAngle = this.effect.field[index].colorAngle
-        // Causes whirpool effect
-        // if (this.angle > this.newAngle){
-        //   this.angle += this.angleCorrector
-        // } else if (this.angle < this.newAngle){
-        //   this.angle -= this.angleCorrector
-        // if (this.angle > this.newAngle){
-        //   this.angle += this.angleCorrector
-        // } else if (this.angle < this.newAngle){
-        //   this.angle += this.angleCorrector
-        // if (this.angle > this.newAngle){
-        //   this.angle -= this.angleCorrector
-        // } else if (this.angle < this.newAngle){
-        //   this.angle -= this.angleCorrector
-        // Blockish
-        // if (this.angle > this.newAngle){
-        //   this.angle *= this.angleCorrector
-        // } else if (this.angle < this.newAngle){
-        //   this.angle += this.angleCorrector
-        // Line fade
-        // if (this.angle > this.newAngle){
-        //   this.angle *= this.angleCorrector
-        // } else if (this.angle < this.newAngle){
-        //   this.angle *= this.angleCorrector
-        // Crackle effect
-        // if (this.angle > this.newAngle){
-        //   this.angle /= this.angleCorrector
-        // } else if (this.angle < this.newAngle){
-        //   this.angle += this.angleCorrector
-        // Regular
         if (this.angle > this.newAngle){
           this.angle -= this.angleCorrector
         } else if (this.angle < this.newAngle){
@@ -90,9 +61,12 @@ class Particle {
           this.angle = this.newAngle
         }
       }
-
-      this.speedX = Math.cos(this.angle)
+      // Only Words
+      this.speedX = Math.sin(this.angle)
       this.speedY = Math.sin(this.angle)
+      // Outline words
+      this.speedX = Math.cos(this.angle)
+      this.speedY = Math.cos(this.angle)
       this.x += this.speedX * this.boost
       this.y += this.speedY * this.boost
 
@@ -109,15 +83,15 @@ class Particle {
   reset(){
     let attempts = 0
     let resetSuccess = false
-    // < 100 makes it scatter outside the words
-    while (attempts < 100 && !resetSuccess){
+
+    while (attempts < 20 && !resetSuccess){
       attempts++
       let test = Math.floor(Math.random() * this.effect.field.length)
       if (this.effect.field[test].alpha > 0){
-        this.x = this.effect.field[test].x
-        this.y = this.effect.field[test].y
+        this.x = Math.floor(Math.random() * this.effect.width)
+        this.y = Math.floor(Math.random() * this.effect.height)
         this.history = [{x: this.x, y: this.y}]
-        this.timer = this.maxLength * 3
+        this.timer = this.maxLength * 2
         resetSuccess = true
       }
     }
@@ -125,7 +99,7 @@ class Particle {
       this.x = Math.random() * this.effect.width
       this.y = Math.random() * this.effect.height
       this.history = [{x: this.x, y: this.y}]
-      this.timer = this.maxLength * 5
+      this.timer = this.maxLength * 2
     }
   }
 }
@@ -138,8 +112,8 @@ class Effect {
     this.width = this.canvas.width
     this.height = this.canvas.height
     this.particles = []
-    this.numberOfParticles = 2000
-    this.cellSize = 5
+    this.numberOfParticles = 9000
+    this.cellSize = 20
     this.rows
     this.cols
     this.field = []
@@ -165,11 +139,16 @@ class Effect {
     gradient.addColorStop(.5,'rgb(9,35,16)')
     gradient.addColorStop(.8,'rgb(99, 75, 218)')
     const gradient2 = this.context.createRadialGradient(this.height * .5, this.width * .5, 10,this.height * .5, this.width * .5, this.width)
-    gradient2.addColorStop(1,'rgb(214, 239, 255)')
-    gradient2.addColorStop(.8,'rgb(133, 208, 255)')
-    gradient2.addColorStop(.6,'rgb(51, 177, 255)')
-    gradient2.addColorStop(.4,'rgb(0, 138, 224)')
-    gradient2.addColorStop(.2,'rgb(0, 88, 143)')
+    // gradient2.addColorStop(1,'rgb(214, 239, 255)')
+    // gradient2.addColorStop(.8,'rgb(133, 208, 255)')
+    // gradient2.addColorStop(.6,'rgb(51, 177, 255)')
+    // gradient2.addColorStop(.4,'rgb(0, 138, 224)')
+    // gradient2.addColorStop(.2,'rgb(0, 88, 143)')
+    gradient2.addColorStop(.9,'rgb(0,0,255)')
+    gradient2.addColorStop(.7,'rgb(200,255,0)')
+    gradient2.addColorStop(.5,'rgb(0,0,255)')
+    gradient2.addColorStop(.3,'rgb(0,0,0)')
+    gradient2.addColorStop(.1,'rgb(255,255,255)')
 
     const gradient3 = this.context.createLinearGradient(0, 0, this.width, this.height)
         gradient3.addColorStop(0.2, 'rgb(255,255,0)')
@@ -178,7 +157,7 @@ class Effect {
         gradient3.addColorStop(0.8, 'rgb(255,255,150)')
 
 
-    this.context.fillStyle = gradient2
+    this.context.fillStyle = gradient3
     this.context.fillText(this.text, this.width * .5, this.height * .5, this.width * .9)
   }
 

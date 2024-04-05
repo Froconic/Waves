@@ -7,7 +7,7 @@ canvas.height = 500;
 ctx.fillStyle = 'white';
 ctx.strokeStyle = 'white';
 ctx.lineWidth = 1;
-ctx.letterSpacing = '30px';
+// ctx.letterSpacing = '30px';
 
 class Particle {
     constructor(effect){
@@ -21,11 +21,11 @@ class Particle {
         this.maxLength = Math.floor(Math.random() * 40 + 10);
         this.angle = 0;
         this.newAngle = 0;
-        this.angleCorrector = Math.random() * 0.5 + 0.01;
+        this.angleCorrector = Math.random() * 0.05 + 0.1;
         this.timer = this.maxLength * 2;
-        //this.colors = ['#7d0101', '#ad0303', '#db0202', '#ff0303', '#fc2323', '#fc4747', '#fc7e7e', 'white'];
+        this.colors = ['#7d0101', '#ad0303', '#db0202', '#ff0303', '#fc2323', '#fc4747', '#fc7e7e', 'white'];
         //this.colors = ['#f8dc3d', '#f8dc3d', '#f2d322', '#c9ad08', '#917d03', '#574a00', '#fae678', '#fcee9f', '#fff7c7','white'];
-        this.colors = ['rgb(255,255,0)'];
+        // this.colors = ['rgb(255,255,0)'];
         this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
     }
     draw(context){
@@ -139,12 +139,19 @@ class Effect {
         gradient2.addColorStop(0.8, 'rgb(255,255,150)');
 
         const gradient3 = this.context.createRadialGradient(this.width * 0.5, this.height * 0.5, 10, this.width * 0.5, this.height * 0.5, this.width);
-        gradient3.addColorStop(0.2, 'rgb(0,0,255)');
-        gradient3.addColorStop(0.4, 'rgb(200,255,0)');
-        gradient3.addColorStop(0.6, 'rgb(0,0,255)');
-        gradient3.addColorStop(0.8, 'rgb(0,0,0)');
+        gradient3.addColorStop(0.8, 'rgb(0,0,255)');
+        gradient3.addColorStop(0.6, 'rgb(200,255,0)');
+        gradient3.addColorStop(0.4, 'rgb(0,0,255)');
+        gradient3.addColorStop(0.2, 'rgb(0,0,0)');
 
-        this.context.fillStyle = gradient2;
+        const gradient4 = this.context.createRadialGradient(this.width * 0.5, this.height * 0.5, 10, this.width * 0.5, this.height * 0.5, this.width);
+        gradient4.addColorStop(0.2, 'rgb(0,0,255)');
+        gradient4.addColorStop(0.4, 'rgb(200,255,0)');
+        gradient4.addColorStop(0.6, 'rgb(0,0,255)');
+        gradient4.addColorStop(0.8, 'rgb(0,0,0)');
+
+
+        this.context.fillStyle = gradient3;
         this.context.fillText(this.text, this.width * 0.5, this.height * 0.5, this.width);
     }
     init(){
