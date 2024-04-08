@@ -1,7 +1,7 @@
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
-canvas.width = 900;
-canvas.height = 900;
+canvas.width = 1920;
+canvas.height = 1080;
 
 // global settings
 ctx.lineCap = 'round';
@@ -91,7 +91,7 @@ class Particle {
       this.opacity = 1;
       let attempts = 0;
       let resetSuccess = false;
-      while (attempts < 6 && !resetSuccess){
+      while (attempts < 100 && !resetSuccess){
           attempts++
           let testIndex = Math.floor(Math.random() * this.effect.flowField.length);
           if (this.effect.flowField[testIndex].colorAngle > 0){
@@ -127,7 +127,7 @@ class Effect {
     this.width = this.canvas.width;
     this.height = this.canvas.height;
     this.particles = [];
-    this.numberOfParticles = 5000;
+    this.numberOfParticles = 9000;
     this.cellSize = 2; //flow field cell size has to be an integer divisible by canvas width and canvas height with no remainder when doing flow field on text and images
     this.rows;
     this.cols;

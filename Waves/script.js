@@ -21,7 +21,7 @@ class Particle {
     this.speedY = 0
     this.boost = Math.floor((Math.random() * 2) + 1)
     this.history = [{x: this.x, y: this.y}]
-    this.lineWidth = 1
+    this.lineWidth = .5
     this.maxLength = Math.floor((Math.random() * 33) + 55)
     this.timer = this.maxLength * 3
     this.opacity = 1
@@ -61,7 +61,7 @@ class Particle {
       this.opacity -= .05
     }
     else if ( this.timer <= 0){
-      this. opacity -= .05
+      this.opacity -= .05
     if (this.opacity <= .1){
       this.reset()
     }
@@ -134,13 +134,13 @@ class Particle {
 
 
 class Effect {
-  constructor(canvas){
+  constructor(canvas, context){
     this.canvas = canvas
     this.context = ctx
     this.width = this.canvas.width
     this.height = this.canvas.height
     this.particles = []
-    this.numberOfParticles = 5000
+    this.numberOfParticles = 2000
     this.cellSize = 2
     this.rows
     this.cols
