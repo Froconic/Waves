@@ -1,7 +1,7 @@
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
-canvas.width = 1920;
-canvas.height = 1080;
+canvas.width = 900;
+canvas.height = 900;
 
 // global settings
 ctx.lineCap = 'round';
@@ -117,7 +117,7 @@ class Particle {
       context.lineTo(this.history[i].x, this.history[i].y);
     }
     context.stroke();
-    context.restore();  
+    context.restore();
   }
 }
 
