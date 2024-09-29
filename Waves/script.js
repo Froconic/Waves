@@ -204,20 +204,7 @@ class Effect {
     })
     // draw flow field grid for debugging
     if (this.debug){
-      context.strokeStyle = 'white'
-      context.lineWidth = 0.3
-      for (let a = 0; a < this.cols; a++){
-        context.beginPath()
-        context.moveTo(this.cellSize * a, 0)
-        context.lineTo(this.cellSize * a, this.height)
-        context.stroke()
-      }
-      for (let b = 0; b < this.rows; b++){
-        context.beginPath()
-        context.moveTo(0, this.cellSize * b)
-        context.lineTo(this.width, this.cellSize * b)
-        context.stroke()
-      }
+      context.drawImage(this.image, this.image.width * 0.5, this.height * 0.5 - this.image.height * 0.5)
     }
   }
 }

@@ -15,9 +15,20 @@
 
 <body>
   <canvas id="canvas1">
-    <img id="image1" src="img/86.jpg" alt="">
+    <img id="image1" src="img/78.jpg" alt="">
   </canvas>
   <script type="py">
+    import os
+
+    images = "img/"
+    counter = 0
+
+    for image in os.listdir(images):
+      with open(os.path.join(images,image)) as f:
+          counter+=1
+          print(f"File detected: {image}")
+    print(f"Images: {counter}")
+
 
   </script>
   <script src="script.js"></script>
