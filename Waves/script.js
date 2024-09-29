@@ -132,7 +132,7 @@ class Effect {
     this.height = this.canvas.height
     this.particles = []
     this.numberOfParticles = particlesNumber
-    this.cellSize = 2 //flow field cell size has to be an integer divisible by canvas width and canvas height with no remainder when doing flow field on text and images
+    this.cellSize = 5 //flow field cell size has to be an integer divisible by canvas width and canvas height with no remainder when doing flow field on text and images
     this.rows
     this.cols
     this.flowField = []
