@@ -3,10 +3,10 @@ const canvas = document.getElementById('canvas1')
 const ctx = canvas.getContext('2d')
 canvas.width = 1900
 canvas.height = 900
-const particlesNumber = 4444
-const maxLength = Math.floor(Math.random() * 10)
+const particlesNumber = 6666
+const maxLength = Math.floor(Math.random() * 3) + 1
 const timer = this.maxLength * 10
-const boost = Math.floor(Math.random() * 5) + 1
+const boost = Math.floor(Math.random() * 10) + 1
 
 // global settings
 ctx.lineCap = 'round'
@@ -39,6 +39,8 @@ class Particle {
     this.oldRed = 0
     this.oldGreen = 0
     this.oldBlue = 0
+    this.increase = false
+    this.decrease = false
   }
   update() {
     this.timer-= 1
@@ -78,6 +80,11 @@ class Particle {
       }
     }
     // update particle position
+    this.speedX = this.speedModifier * Math.cos(this.angle)
+    this.speedY = this.speedModifier * Math.sin(this.angle)
+    // move particle in a direction
+    this.x += this.speedX
+    this.y += this.speedY
     this.speedX = this.speedModifier * Math.cos(this.angle)
     this.speedY = this.speedModifier * Math.sin(this.angle)
     // move particle in a direction
@@ -124,7 +131,6 @@ class Particle {
     context.restore()
   }
 }
-
 class Effect {
   constructor(canvas){
     this.canvas = canvas
@@ -142,6 +148,30 @@ class Effect {
       if (e.key === 'd') this.debug = !this.debug
     })
   }
+    increaseSpeed() {
+      this.particles.forEach(particle => {
+        particle.speedModifier += 1;  // Increase speed by 1
+      })
+    }
+    decreaseSpeed() {
+      this.particles.forEach(particle => {
+        particle.speedModifier = Math.max(1, particle.speedModifier - 1);  // Decrease speed by 1, but keep above 1
+      })
+    }
+
+    increaseLength() {
+    this.particles.forEach(particle => {
+      particle.maxLength += 1;  // Increase trail length by 1
+    });
+  }
+
+  decreaseLength() {
+    this.particles.forEach(particle => {
+      particle.maxLength = Math.max(1, particle.maxLength - 1);  // Decrease trail length by 1, but keep above 1
+    });
+  }
+
+
   init(context){
     this.rows = Math.floor(this.height / this.cellSize)
     this.cols = Math.floor(this.width / this.cellSize)
@@ -170,7 +200,7 @@ class Effect {
         const blue = pixels[index + 2]
         const alpha = pixels[index + 3]
         const color = 'rgb('+ red + ',' + green + ',' + blue + ')'
-        const grayscale = (red + green + blue) / 3 
+        const grayscale = (red + green + blue) / 3
         const grayscaleColor = 'rgb('+ grayscale + ',' + grayscale + ',' + grayscale + ')'
         // convert grayscale range of 0 to 255 to angle range of 0 to 6.28
         //new_value = ( (old_value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
@@ -193,10 +223,11 @@ class Effect {
     for (let i = 0; i < this.numberOfParticles; i++) {
       this.particles.push(new Particle(this))
     }
-    console.log(this.particles, this)
+    
+    // console.log(this.particles, this)
   }
   render(context){
-    context.fillStyle = 'rgba(0, 0, 0, 1)'
+    context.fillStyle = 'rgba(0, 0, 0, .3)'
     context.fillRect(0, 0, this.width, this.height)
     this.particles.forEach(particle => {
       particle.update()
@@ -214,7 +245,26 @@ class Effect {
 const effect = new Effect(canvas)
 effect.init(ctx)
 effect.render(ctx)
-console.log(effect.flowField)
+// console.log(effect.flowField)
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === '+') {
+    effect.increaseSpeed()  // Increase speed
+  }
+  if (event.key === '-') {
+    effect.decreaseSpeed()  // Decrease speed
+  }
+})
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === ']') {
+    effect.increaseLength(); // Increase trail length
+  }
+  if (event.key === '[') {
+    effect.decreaseLength()  // Decrease trail length
+  }
+})
+
 
 function animate(){
   effect.render(ctx)
