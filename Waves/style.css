@@ -16,4 +16,5 @@ canvas {
 }
 #image1 {
   display: none;
+  opacity: 0;
 }
